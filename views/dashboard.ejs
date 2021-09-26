@@ -1,0 +1,5 @@
+<h1>Hi <%= name %></h1>
+<h6>You are <% if(!admin){ %> not <% } %> an admin</h6>
+<form action="/logout?_method=DELETE" method="POST">
+  <button type="submit">Log Out</button>
+</form>

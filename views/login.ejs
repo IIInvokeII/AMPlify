@@ -1,0 +1,41 @@
+<head>
+    <meta charset="UTF-8">
+    <title>Homepage</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="content">
+        <header id="header">
+            <div id="logo">
+                <h5>AMPlify.</h5>
+            </div>
+            <div id="description"></div>
+        </header>
+        <main id="main"></main>
+        <aside id="aside">
+            <div class="form">
+                <h2>LogIn</h2>
+                <form method="POST" action="/login">
+                    <div class="textField">
+                        <input id="username" name="username" type="text" placeholder="Enter user name" required>
+                    </div>
+                    <div class="textField">
+                        <input id="password" name="password" type="password" placeholder="Enter password" required>
+                    </div>
+                    <div class="forgotPass">
+                        forgot password ?
+                    </div>
+                    <% if (messages.error) { %>
+                        <%= messages.error %>
+                      <% } %>
+                    <input id="login" type="submit" value="Login">
+                    <div class="signUp">
+                        not a member ? <a href="#">Sign up.</a>
+                    </div>
+                </form>
+            </div>
+        </aside>
+        <footer id="footer"></footer>
+    </div>
+</body>
