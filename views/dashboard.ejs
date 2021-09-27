@@ -1,5 +1,18 @@
-<h1>Hi <%= name %></h1>
-<h6>You are <% if(!admin){ %> not <% } %> an admin</h6>
-<form action="/logout?_method=DELETE" method="POST">
-  <button type="submit">Log Out</button>
-</form>
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header id = "header">
+  <div id="logo">
+    <h5>AMPlify.Dashboard</h5>
+  </div>
+  </header>
+<h2>Hi <%= name %></h2>
+<h3>You are <% if(!admin){ %> not <% } %> an admin</h3>
+  <form action="/logout?_method=DELETE" method="POST">
+    <button type="submit">Log Out</button>
+  </form>
+</body>
