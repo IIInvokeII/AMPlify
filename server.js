@@ -15,6 +15,7 @@ const initializePassport = require('./passport-config')
 initializePassport(passport,
   async username => {
     const db = await mongodb.MongoClient.connect('mongodb://localhost:27017/').catch(err => { throw err });
+    console.log("Connected");
     try {
       return await db.db("amplify").collection('residents').findOne({ "user.username": username });
     } catch (err) {
@@ -58,23 +59,28 @@ app.get('/login', checkNotAuthenticated, (req, res) => {
   res.render('login.ejs')
 })
 
+app.get('/register', checkAuthenticated, (req, res) => {
+  res.render('register.ejs')
+})
+
 app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
   successRedirect: '/',
   failureRedirect: '/login',
   failureFlash: true
 }))
 
-app.post('/register', checkNotAuthenticated, async (req, res) => {
+app.post('/register', checkAuthenticated, async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, 10)
     resident = {
       user: {
         username: req.body.username,
-        password: hashedPassword
+        password: hashedPassword,
       },
       name: req.body.name,
-      apartment: req.body.apartment,
-      admin: req.body.admin
+      apartment: req.user.apartment,
+      doorNumber: req.body.doorNumber,
+      admin: false
     }
 
     mongodb.MongoClient.connect('mongodb://localhost:27017/', function (err, db) {
@@ -82,16 +88,54 @@ app.post('/register', checkNotAuthenticated, async (req, res) => {
       var dbo = db.db("amplify");
       dbo.collection("residents").insertOne(resident, function (err, result) {
         if (err) {
-          res.status(400).send("Error inserting resident info!");
+          req.flash('info','user not added')
+          res.redirect('/register')          
         } else {
-          console.log(`Added a new resident with id ${result.insertedId}`);
-          res.status(204).send();
+          console.log(`Added a new resident`)
+          req.flash('info','user added successfully')
+          res.redirect('/register')          
         }
       });
     });
 
   } catch {
-    res.status(400).send('error')
+    req.flash('info','error, please try again')
+    res.redirect('/register')
+  }
+})
+
+app.post('/su/register_admin', checkNotAuthenticated, async (req, res) => {
+  try {
+    if(req.header('Authorization') !== 'qwerty12345') {
+      res.status(400).send("Unauthorized");
+      return;
+    }
+    const hashedPassword = await bcrypt.hash(req.body.password, 10)
+    resident = {
+      user: {
+        username: req.body.username,
+        password: hashedPassword,
+      },
+      name: req.body.name,
+      apartment: req.body.apartment,
+      doorNumber: req.body.doorNumber,
+      admin: true
+    }
+
+    mongodb.MongoClient.connect('mongodb://localhost:27017/', function (err, db) {
+      if (err) throw err;
+      var dbo = db.db("amplify");
+      dbo.collection("residents").insertOne(resident, function (err, result) {
+        if (err) {
+          res.status(400).send("Error creating apartment admin account");
+        } else {
+          res.status(200).send(`Apartment admin account created successfully`);
+        }
+      });
+    });
+
+  } catch {
+    res.status(400).send("Error creating apartment admin account");
   }
 })
 

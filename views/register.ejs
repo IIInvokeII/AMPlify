@@ -1,0 +1,27 @@
+<body>
+    <form action="/register" method="POST">
+        <div>
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        <div>
+            <label for="doorNumber">Door No.:</label>
+            <input type="text" id="doorNumber" name="doorNumber" required>
+        </div>
+        <div>
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        <div>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit">Register</button>
+    </form>
+    <% if ( messages.info ) { %>
+        <p>
+            <%= messages.info %>
+        </p>
+        <% } %>
+</body>
+<a href="/">Back</a>
