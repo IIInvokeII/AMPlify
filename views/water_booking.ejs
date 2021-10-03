@@ -1,0 +1,93 @@
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="dashboardInputStyle.css">
+    <script>
+        var xmlhttp = new XMLHttpRequest();
+        var url = "http://localhost:3000/users";
+        var apartment = `<%= apartment %>`
+        xmlhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var residents = JSON.parse(this.responseText);
+                populateDropdown(residents);
+            }
+        }
+        xmlhttp.open("GET", url, true);
+        xmlhttp.setRequestHeader('apartment', apartment)
+        xmlhttp.send();
+
+        function populateDropdown(residents) {
+            var out = '<option value="" selected disabled hidden>-- expense paid by --</option>';
+            var i;
+            for (i = 0; i < residents.length; i++) {
+                out += '<option value="' + residents[i].id + '|' + residents[i].name + '">' + residents[i].name + '</option>';
+            }
+            document.getElementById("paid_by").innerHTML = out;
+        }
+    </script>
+</head>
+
+<body>
+    <div class="mainGrid">
+        <header>
+            <div id="logo">
+                <a href="/">AMPLify.</a>
+            </div>
+            <nav>
+                <ul>
+                    <% if(admin){ %>
+                        <li><a href="/register">New Resident</a></li>
+                        <% } %>
+                            <li>
+                                <form action="/logout?_method=DELETE" method="POST">
+                                    <button type="submit">Log Out</button>
+                                </form>
+                            </li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <section>
+                <div id="water">
+                    <!--Water bill inputs-->
+                    <div class="form" id="water-booking-form">
+                        <h3>Water - Bookings</h3>
+                        <form action="/water_booking" method="POST">
+                            <div class="dateField">
+                                <input type="date" name="date_paid" required>
+                            </div>
+                            <select name="paid_by" id="paid_by" required></select>
+                            <div class="textField">
+                                <input type="text" name="water_quantity" placeholder="water quantity" required>
+                            </div>
+                            <div class="textField">
+                                <input type="text" name="amount_paid" placeholder="amount paid" required>
+                            </div>
+                            <input type="submit" value="Submit">
+                        </form>
+                        <% if ( messages.info ) { %>
+                            <p>
+                                <%= messages.info %>
+                            </p>
+                            <% } %>
+                    </div>
+                    <!-- <div class="form" id="water-reading-form">
+                        <h3>Water - Readings</h3>
+                        <form action="POST">
+                            <div class="textField">
+                                <input type="text" name="who" placeholder="who" required>
+                            </div>
+                            <div class="textField">
+                                <input type="text" name="meter_reading" placeholder="meter reading" required>
+                            </div>
+                            <input type="submit" value="Update">
+                        </form>
+                    </div> -->
+                </div>
+            </section>
+        </main>
+        <footer>
+            &copy; 2021 AMPlify, Team 2.
+        </footer>
+    </div>
+</body>

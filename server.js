@@ -4,6 +4,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const express = require('express')
 const app = express()
+var cors = require('cors');
 const bcrypt = require('bcryptjs')
 const passport = require('passport')
 const flash = require('express-flash')
@@ -36,6 +37,7 @@ initializePassport(passport,
   }
 )
 
+app.use(cors())
 app.set('view engine', 'ejs')
 app.use(express.static(__dirname + '/public'))
 app.use(express.urlencoded({ extended: false }))
@@ -52,8 +54,13 @@ app.use(methodOverride('_method'))
 
 
 app.get('/', checkAuthenticated,  (req, res) => {    
-  res.render('dashboard.ejs', { name: req.user.name, admin: req.user.admin })
+  res.render('dashboard.ejs', { name: req.user.name, admin: req.user.admin, apartment: req.user.apartment })
 })
+
+app.get('/water_booking', checkAuthenticated,  (req, res) => {    
+  res.render('water_booking.ejs', { name: req.user.name, admin: req.user.admin, apartment: req.user.apartment })
+})
+
 
 app.get('/login', checkNotAuthenticated, (req, res) => {
   res.render('login.ejs')
@@ -61,6 +68,31 @@ app.get('/login', checkNotAuthenticated, (req, res) => {
 
 app.get('/register', checkAuthenticated, (req, res) => {
   res.render('register.ejs')
+})
+
+app.get('/users', checkNotAuthenticated, async (req, res) => {
+  const db = await mongodb.MongoClient.connect('mongodb://localhost:27017/').catch(err => {
+    console.log(err)
+    res.status(400).send("Error fetching residents");
+  });
+    try {
+      console.log('querying for residents in apartment: ' + req.header('apartment') );
+      residents = await db.db("amplify").collection('residents').find({ "apartment": req.header('apartment') }).toArray();            
+      var users = []
+      for(var i = 0; i < residents.length; i++) {
+        var user = {
+          id: residents[i]._id,
+          name: residents[i].name
+        }
+        users.push(user)
+      }
+      res.status(200).send(JSON.stringify(users));
+    } catch (err) {
+      console.log(err)
+      res.status(400).send("Error fetching residents");
+    } finally {
+      db.close();
+    }
 })
 
 app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
@@ -136,6 +168,41 @@ app.post('/su/register_admin', checkNotAuthenticated, async (req, res) => {
 
   } catch {
     res.status(400).send("Error creating apartment admin account");
+  }
+})
+
+app.post('/water_booking',checkAuthenticated, (req,res) => {
+  console.log('processing new water booking expense')
+  try {
+    expense = {
+      expense_type: "Water Booking",
+      paid_by_ID: req.body.paid_by.split('|')[0],
+      paid_by: req.body.paid_by.split('|')[1],
+      date_paid: req.body.date_paid,
+      water_quantity: req.body.water_quantity,
+      amount_paid: req.body.amount_paid,
+      apartment: req.user.apartment,
+      booking_done: false
+    }
+
+    mongodb.MongoClient.connect('mongodb://localhost:27017/', function (err, db) {
+      if (err) throw err;
+      var dbo = db.db("amplify");
+      dbo.collection("expenses").insertOne(expense, function (err, result) {
+        if (err) {
+          req.flash('info','expense not added')
+          res.redirect('/water_booking')          
+        } else {
+          console.log(`Added a new resident`)
+          req.flash('info','expense added successfully')
+          res.redirect('/water_booking')          
+        }
+      });
+    });
+
+  } catch {
+    req.flash('info','error, please try again')
+    res.redirect('/water_booking')
   }
 })
 
