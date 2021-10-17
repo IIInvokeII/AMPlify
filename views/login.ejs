@@ -1,41 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Homepage</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="loginStyle.css">
 </head>
-
 <body>
-    <div id="content">
-        <header id="header">
-            <div id="logo">
-                <h5>AMPlify.</h5>
+    <div class="mainGrid">
+        <header>
+            <div class="logo">
+                <p>
+                    AMPlify...
+                </p>
             </div>
-            <div id="description"></div>
+            <div class="description">
+                <p>
+                    "amplify your apartment experience"
+                </p>
+            </div>
         </header>
-        <main id="main"></main>
-        <aside id="aside">
-            <div class="form">
-                <h2>Log In to AMPlify your Apartment Experience</h2>
-                <form method="POST" action="/login">
-                    <div class="textField">
-                        <input id="username" name="username" type="text" placeholder="Enter user name" required>
-                    </div>
-                    <div class="textField">
-                        <input id="password" name="password" type="password" placeholder="Enter password" required>
-                    </div>
-                    <div class="forgotPass">
-                        forgot password ?
-                    </div>
-                    <% if (messages.error) { %>
-                        <%= messages.error %>
-                      <% } %>
-                    <input id="login" type="submit" value="Login">
-                    <div class="signUp">
-                        not a member ? <a href="#">Sign up.</a>
-                    </div>
-                </form>
-            </div>
-        </aside>
-        <footer id="footer"></footer>
+        <main>
+            <section></section>
+            <aside>
+                <div class="loginForm">
+                    <p>
+                        Login
+                    </p>
+                    <form method="POST">
+                        <div class="textField">
+							<input id="username" name="username" type="text" placeholder="Username: " required>
+						</div>
+						<div class="textField">
+							<input id="password" name="password" type="password" placeholder="Password:" required>
+						</div>
+                        <div class="forgotPassword">
+                            forgot password ?
+                        </div>
+                        <% if (messages.error) { %>
+                            <%= messages.error %>
+                        <% } %>
+                        <div class="submitField">
+                            <input type="submit" value="Login">
+                        </div>
+                        <div class="signup">
+                            not a member ? <a href="#">SIGN UP</a>.
+                        </div>
+                    </form>
+                </div>
+            </aside>
+        </main>
+        <footer>
+            <p>
+                &copy; AMPlify, by Team 2.
+            </p>
+        </footer>
     </div>
 </body>
+</html>
