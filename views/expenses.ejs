@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expenses</title>
+    <link rel="stylesheet" href="expensesStyle.css">
+    <script>
+        var xmlhttp = new XMLHttpRequest();
+        var url = "http://localhost:3000/users";
+        var apartment = `<%= apartment %>`
+        xmlhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var residents = JSON.parse(this.responseText);
+                populateDropdown(residents);
+            }
+        }
+        xmlhttp.open("GET", url, true);
+        xmlhttp.setRequestHeader('apartment', apartment)
+        xmlhttp.send();
+
+        function populateDropdown(residents) {
+            var out = '<option value="" selected disabled hidden>-- expense paid by --</option>';
+            var i;
+            for (i = 0; i < residents.length; i++) {
+                out += '<option value="' + residents[i].id + '|' + residents[i].name + '">' + residents[i].name + '</option>';
+            }
+            document.getElementById("paid_by").innerHTML = out;
+            document.getElementById("residents_count").value = residents.length;            
+        }
+
+        function expenseTypeChangeListener() {
+            if(document.getElementById('expense_type').value === 'corpusFunds') {
+                document.getElementById('paid_by').hidden = true;
+                document.getElementById('paid_by').required = false;
+                document.getElementById('paid_by').value = '';
+            } else {
+                document.getElementById('paid_by').hidden = false;
+                document.getElementById('paid_by').required = true;
+                document.getElementById('paid_by').hidden = '';
+            }
+
+            if(document.getElementById('expense_type').value === 'waterBookings') {
+                document.getElementById('water_quantity_div').hidden = false;
+                document.getElementById('water_quantity').required = true;
+                document.getElementById('water_quantity').value = '';
+            } else {
+                document.getElementById('water_quantity_div').hidden = true;
+                document.getElementById('water_quantity').required = false;
+                document.getElementById('water_quantity').hidden = '';
+            }
+        }        
+    </script>
+</head>
+<body>
+    <div class="mainGrid">
+        <header>
+            <div class="logo">
+                <a href="/">AMPLify.</a>
+            </div>
+            <nav>
+                <ul>
+                    <% if(admin){ %> <li><a href="/new_expense">Expenses</a></li> <% } %>
+                    <li><a href="#">Expenditure</a></li>
+                    <% if(admin){ %> <li><a href="/register">Register</a></li> <% } %>
+                    <li><a href="/logout">Log out</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <aside>
+                <div class="profile">
+                    
+                </div>
+                <div class="helplines">
+
+                </div>
+            </aside>
+            <section>
+                <div class="expensesForm">
+                    <form method="POST">
+                        <div class="selectField">
+                            <select id="expense_type" name="expense_type" onchange="expenseTypeChangeListener()" required>
+                                <option value="" selected disabled hidden>Type of expenses</option>
+                                <option value="miscellaneous">Miscellaneous Expenses</option>
+                                <option value="waterBookings">Water Bookings</option>
+                                <!-- <option value="waterReadings">Water Readings</option> -->
+                                <option value="electricity">Electricity</option>
+                                <option value="septicTankCleaning">Septic tank Cleaning</option>
+                                <option value="staffSalary">Staff Salary</option>
+                                <option value="corpusFunds">Corpus Funds</option>
+                            </select>
+                        </div>
+                        <div class="dateField">
+                            <input type="date" name="date_paid" required>
+                        </div>
+                        <select name="paid_by" id="paid_by" required></select>
+                        <input name="residents_count" id="residents_count" hidden>
+                        <div class="textField">
+                            <input type="text" name="amount_paid" placeholder="How much ?" required>
+                        </div>
+                        <div class="textField" id="water_quantity_div">
+                            <input type="text" id="water_quantity" name="water_quantity" placeholder="water quantity" required>
+                        </div>
+                        <div class="textField">
+                            <input type="text" name="desc" placeholder="Description (if applicable)">
+                        </div>
+                        <div class="submitField">
+                            <input type="submit" value="Update">
+                        </div>
+                    </form>
+                    <% if ( messages.info ) { %>
+                        <p>
+                            <%= messages.info %>
+                        </p>
+                    <% } %>
+                </div>
+            </section>
+        </main>
+        <footer>
+            &copy; AMPlify, by Team 2.
+        </footer>
+    </div>
+</body>
+</html>

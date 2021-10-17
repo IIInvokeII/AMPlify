@@ -16,134 +16,15 @@
             </div>
             <nav>
                 <ul>
-                  <% if(admin){ %> <li><a href="/register">New Resident</a></li> <% } %>
-                    <!-- <li><a href="#">Inputs</a></li>
-                    <li><a href="#">Outputs</a></li> -->
-                    <li><a href="/water_booking">Water Booking</a></li>
-                    <li><form action="/logout?_method=DELETE" method="POST">
-                      <button type="submit">Log Out</button>
-                    </form></li>
+                    <% if(admin){ %> <li><a href="/new_expense">Expenses</a></li> <% } %>
+                    <li><a href="#">Expenditure</a></li>
+                    <% if(admin){ %> <li><a href="/register">Register</a></li> <% } %>
+                    <li><a href="/logout">Log out</a></li>
                 </ul>
             </nav>
         </header>
         <main>
-            <aside>
-                <!--Profile, helplines-->
-                Profile, helplines
-            </aside>
-            <section>
-                <div id="month">
-                    <h1>MONTH: "current month"</h1>
-                </div>
-                <div id="water">
-                    <!--Water bill inputs-->
-                    <div onclick="toggleWindow('water-booking-form', false)">Water Booking Form</div>
-                    <div onclick="toggleWindow('water-reading-form', false)">Water Reading Form</div>                    
-                    <%- include('water-booking.ejs') %>
-                    <div class="form" id="water-reading-form" hidden>
-                        <h3>Water - Readings</h3><span onclick="toggleWindow('water-reading-form', true)">X</span>
-                        <form action="POST">
-                            <div class="textField">
-                                <input type="text" placeholder="who" required>
-                            </div>
-                            <div class="textField">
-                                <input type="text" placeholder="meter reading" required>
-                            </div>
-                            <input type="submit" value="Update">
-                        </form>
-                    </div>
-                    <!-- <div class="form">
-                        <h3>Water - Readings: per head cost</h3>
-                    </div> -->
-                </div>
-                <div id="electricity">
-                    <!--Electricity bill inputs-->
-                    <div class="form">
-                        <h3>Electricity</h3>
-                        <form action="POST">
-                            <div class="dateField">
-                                <input type="date" name="when paid" required>
-                            </div>
-                            <div class="textField">
-                                <input type="text" placeholder="who paid" required>
-                            </div>
-                            <div class="textField">
-                                <input type="text" placeholder="how much" required>
-                            </div>
-                            <input type="submit" value="Update">
-                        </form>
-                    </div>
-                </div>
-                <div id="staffSalary">
-                    <!--Staff salary bill inputs-->
-                    <div class="form">
-                        <h3>Staff salary</h3>
-                        <form action="POST">
-                            <div class="textField">
-                                <input type="text" placeholder="who" required>
-                            </div>
-                            <div class="dateField">
-                                <input type="date" name="when paid" required>
-                            </div>
-                            <div class="textField">
-                                <input type="text" placeholder="how much" required>
-                            </div>
-                            <input type="submit" value="Update">
-                        </form>
-                    </div>
-                </div>
-                <div id="septicTank">
-                    <!--Septic tank bill inputs-->
-                    <div class="form">
-                        <h3>Septic tank</h3>
-                        <form action="POST">
-                            <div class="dateField">
-                                <input type="date" name="when paid" required>
-                            </div>
-                            <div class="textField">
-                                <input type="text" placeholder="who paid" required>
-                            </div>
-                            <div class="textField">
-                                <input type="text" placeholder="how much" required>
-                            </div>
-                            <input type="submit" value="Update">
-                        </form>
-                    </div>
-                </div>
-                <div id="corpusFund">
-                    <!--Corpus funds-->
-                    <div class="form">
-                        <h3>Corpus funds</h3>
-                        <form action="POST">
-                            <div class="textField">
-                                <input type="text" placeholder="how much" required>
-                            </div>
-                            <input type="submit" value="Update">
-                        </form>
-                    </div>
-                </div>
-                <div id="miscellaneousExpenses">
-                    <!--Miscellaneous expenses bill inputs-->
-                    <div class="form">
-                        <h3>Miscellaneous expenses</h3>
-                        <form action="POST">
-                            <div class="dateField">
-                                <input type="date" name="when paid" required>
-                            </div>
-                            <div class="textField">
-                                <input type="text" placeholder="what expenses" required>
-                            </div>
-                            <div class="textField">
-                                <input type="text" placeholder="who paid" required>
-                            </div>
-                            <div class="textField">
-                                <input type="text" placeholder="how much" required>
-                            </div>
-                            <input type="submit" value="Update">
-                        </form>
-                    </div>
-                </div>
-            </section>
+            Profile, helplines
         </main>
         <footer>
             &copy; 2021 AMPlify, Team 2.

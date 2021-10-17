@@ -57,8 +57,8 @@ app.get('/', checkAuthenticated,  (req, res) => {
   res.render('dashboard.ejs', { name: req.user.name, admin: req.user.admin, apartment: req.user.apartment })
 })
 
-app.get('/water_booking', checkAuthenticated,  (req, res) => {    
-  res.render('water_booking.ejs', { name: req.user.name, admin: req.user.admin, apartment: req.user.apartment })
+app.get('/new_expense', checkAuthenticated,  (req, res) => {    
+  res.render('expenses.ejs', { name: req.user.name, admin: req.user.admin, apartment: req.user.apartment })
 })
 
 
@@ -171,18 +171,25 @@ app.post('/su/register_admin', checkNotAuthenticated, async (req, res) => {
   }
 })
 
-app.post('/water_booking',checkAuthenticated, (req,res) => {
-  console.log('processing new water booking expense')
-  try {
+app.post('/new_expense',checkAuthenticated, (req,res) => {
+  console.log('processing new expense')
+  try {    
     expense = {
-      expense_type: "Water Booking",
-      paid_by_ID: req.body.paid_by.split('|')[0],
-      paid_by: req.body.paid_by.split('|')[1],
+      expense_type: req.body.expense_type,
       date_paid: req.body.date_paid,
-      water_quantity: req.body.water_quantity,
       amount_paid: req.body.amount_paid,
       apartment: req.user.apartment,
-      booking_done: false
+      //booking_done: false
+    }
+
+    if(req.body.expense_type !== 'corpusFunds') {
+      expense.paid_by_ID = req.body.paid_by.split('|')[0];
+      expense.paid_by = req.body.paid_by.split('|')[1];
+    }
+
+    if(req.body.expense_type == 'waterBookings'){
+      expense.individual_amount = req.body.amount_paid / req.body.residents_count;
+      expense.water_quantity= req.body.water_quantity;
     }
 
     mongodb.MongoClient.connect('mongodb://localhost:27017/', function (err, db) {
@@ -191,22 +198,22 @@ app.post('/water_booking',checkAuthenticated, (req,res) => {
       dbo.collection("expenses").insertOne(expense, function (err, result) {
         if (err) {
           req.flash('info','expense not added')
-          res.redirect('/water_booking')          
+          res.redirect('/new_expense')          
         } else {
-          console.log(`Added a new resident`)
+          //console.log(`Added a new resident`)
           req.flash('info','expense added successfully')
-          res.redirect('/water_booking')          
+          res.redirect('/new_expense')          
         }
       });
     });
 
   } catch {
     req.flash('info','error, please try again')
-    res.redirect('/water_booking')
+    res.redirect('/new_expense')
   }
 })
 
-app.delete('/logout', (req, res) => {
+app.get('/logout', (req, res) => {
   req.logOut()
   res.redirect('/login')
 })

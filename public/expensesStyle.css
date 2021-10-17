@@ -1,0 +1,179 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: monospace;
+    font-size: 2rem;
+}
+
+.mainGrid {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-rows: 1fr 18fr 1fr;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 3px solid black;
+    background: linear-gradient(90deg, orange, red, purple);
+}
+
+header > * {
+    padding: 0.5rem;
+}
+
+footer {
+    font-size: 1rem;
+    padding: 0.5em;
+    text-align: center;
+    border-top: 3px solid black;
+    background: linear-gradient(90deg, orange, red, purple);
+}
+
+.logo {
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.logo:hover {
+    color: white;
+}
+
+nav {
+    display: flex;
+    justify-content: space-around;
+    font-size: 1.25rem;
+}
+
+nav li {
+    display: inline;
+    margin: 0 5rem;
+}
+
+nav li a {
+    text-decoration: none;
+    color: black;
+}
+
+nav li a:hover {
+    color: white;
+    border-bottom: 3px solid white;
+    font-weight: 600;
+}
+
+main {
+    display: grid;
+    grid-template-columns: repeat(7,1fr);
+    font-size: 1.25rem;
+}
+
+aside {
+    grid-column: span 2;
+    border-right: 3px solid black;
+}
+
+section {
+    grid-column: span 5;
+    /* padding: 2rem; */
+}
+
+.currentMonth {
+    font-size: 1.5rem;
+    font-weight: 600;
+    padding: 1rem;
+    border-bottom: 3px dotted silver;
+}
+
+.formsTab {
+    padding: 1rem;
+}
+
+/* .expensesType button {
+    font-family: monospace;
+    font-size: 1.25rem;
+    color: white;
+    border: 3px solid black;
+    border-radius: 25px;
+    padding: 1rem;
+    background: linear-gradient(90deg, orange, red, purple);
+    cursor: pointer;
+}
+
+.expensesType {
+    position: relative;
+    display: inline-block;
+}
+
+.expensesList {
+    display: none;
+    position: absolute;
+    z-index: 1;
+}
+
+.expensesList p {
+    padding: 0.25rem 1rem;
+}
+
+.expensesList p:hover {
+    border-bottom: 3px solid black;
+}
+
+.expensesType:hover .expensesList {
+    display: block;
+} */
+
+.expensesForm {
+    font-size: 2rem;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -60%);
+    border: 3px solid black;
+    border-radius: 25px;
+    width: 400px;
+}
+
+.expensesForm form {
+    padding: 1rem;
+}
+
+.expensesForm form > * {
+    margin: 0.5rem;
+    padding: 0.5rem;
+}
+
+.textField {
+    border-bottom: 3px dotted black;
+}
+
+.textField input {
+    font-family: monospace;
+    font-size: 1.25rem;
+    width: 100%;
+    height: 2rem;
+    border: none;
+    outline: none;
+    background: none;
+}
+
+.submitField input[type="submit"] {
+    font-family: monospace;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
+    width: 100%;
+    height: 3rem;
+    border: 1.5px solid black;
+    border-radius: 25px;
+    background: linear-gradient(90deg, orange, red, purple);
+    cursor: pointer;
+}
+
+.submitField input[type="submit"]:hover {
+    border: 3px solid black;
+}
