@@ -61,6 +61,9 @@ app.get('/new_expense', checkAuthenticated,  (req, res) => {
   res.render('expenses.ejs', { name: req.user.name, admin: req.user.admin, apartment: req.user.apartment })
 })
 
+app.get('/water_reading', checkAuthenticated, (req,res) => {
+  res.render('water_reading.ejs',{ name: req.user.name, admin: req.user.admin, apartment: req.user.apartment })
+})
 
 app.get('/login', checkNotAuthenticated, (req, res) => {
   res.render('login.ejs')
@@ -190,6 +193,38 @@ app.post('/new_expense',checkAuthenticated, (req,res) => {
     if(req.body.expense_type == 'waterBookings'){
       expense.individual_amount = req.body.amount_paid / req.body.residents_count;
       expense.water_quantity= req.body.water_quantity;
+    }
+
+    mongodb.MongoClient.connect('mongodb://localhost:27017/', function (err, db) {
+      if (err) throw err;
+      var dbo = db.db("amplify");
+      dbo.collection("expenses").insertOne(expense, function (err, result) {
+        if (err) {
+          req.flash('info','expense not added')
+          res.redirect('/new_expense')          
+        } else {
+          //console.log(`Added a new resident`)
+          req.flash('info','expense added successfully')
+          res.redirect('/new_expense')          
+        }
+      });
+    });
+
+  } catch {
+    req.flash('info','error, please try again')
+    res.redirect('/new_expense')
+  }
+})
+
+app.post('/water_reading',checkAuthenticated, (req,res) => {
+  console.log('processing water reading')
+  try {    
+    expense = {
+      expense_type: req.body.expense_type,
+      resident_ID : req.body.resident_name.split('|')[0],
+      resident_name : req.body.resident_name.split('|')[1],
+      water_quantity : req.body.water_quantity,
+      apartment: req.user.apartment,
     }
 
     mongodb.MongoClient.connect('mongodb://localhost:27017/', function (err, db) {

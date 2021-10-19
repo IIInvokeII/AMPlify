@@ -132,7 +132,7 @@ section {
     position: relative;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -60%);
+    transform: translate(-60%, -50%);
     border: 3px solid black;
     border-radius: 25px;
     width: 400px;
