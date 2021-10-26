@@ -65,12 +65,16 @@ app.get('/water_reading', checkAuthenticated, (req,res) => {
   res.render('water_reading.ejs',{ name: req.user.name, admin: req.user.admin, apartment: req.user.apartment })
 })
 
+app.get('/expenditure',checkAuthenticated, (req,res) => {
+  res.render('expenditure.ejs', { name: req.user.name, admin: req.user.admin, apartment: req.user.apartment })
+})
+
 app.get('/login', checkNotAuthenticated, (req, res) => {
   res.render('login.ejs')
 })
 
 app.get('/register', checkAuthenticated, (req, res) => {
-  res.render('register.ejs')
+  res.render('register.ejs', { name: req.user.name, admin: req.user.admin, apartment: req.user.apartment })
 })
 
 app.get('/users', checkNotAuthenticated, async (req, res) => {

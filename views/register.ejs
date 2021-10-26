@@ -15,9 +15,9 @@
             </div>
             <nav>
                 <ul>
-                    <li><a href="/new_expense">Expenses</a></li>
-                    <li><a href="#">Expenditure</a></li>
-                    <li><a href="/register">New user</a></li>
+                    <% if(admin){ %> <li><a href="/new_expense">Expenses</a></li> <% } %>
+                    <li><a href="/expenditure">Expenditure</a></li>
+                    <% if(admin){ %> <li><a href="/register">Register</a></li> <% } %>
                     <li><a href="/logout">Log out</a></li>
                 </ul>
             </nav>

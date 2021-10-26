@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expenditure</title>
+    <link rel="stylesheet" href="expenditureStyle.css">
+</head>
+<body>
+    <div class="mainGrid">
+        <header>
+            <div class="logo">
+                <a href="/">AMPLify.</a>
+            </div>
+            <nav>
+                <ul>
+                    <% if(admin){ %> <li><a href="/new_expense">Expenses</a></li> <% } %>
+                    <li><a href="/expenditure">Expenditure</a></li>
+                    <% if(admin){ %> <li><a href="/register">Register</a></li> <% } %>
+                    <li><a href="/logout">Log out</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <aside>
+                <div class="profile">
+                    <p>
+                        PROFILE:
+                    </p>
+                    <p>
+                        <span class="subHeading">
+                            APARTMENT:
+                        </span> Example1
+                    </p>
+                    <p>
+                        <span class="subHeading">
+                            HOUSE:
+                        </span> F1
+                    </p>
+                    <p>
+                        <span class="subHeading">
+                            NAME:
+                        </span> Person1
+                    </p>
+                    <p>
+                        <span class="subHeading">
+                            CONTACT:
+                        </span> 90909 90909
+                    </p>
+                </div>
+                <div class="helplines">
+                    <p>
+                        HELPLINES:
+                    </p>
+                    <p>
+                        Line1: 1212 1212
+                    </p>
+                    <p>
+                        Line2: 3434 3434
+                    </p>
+                    <p>
+                        Line3: 5656 5656
+                    </p>
+                </div>
+            </aside>
+            <section>
+                <div class="currentMonth">
+                    <p>
+                        month: "CURRENT MONTH"
+                    </p>
+                </div>
+                <div class="expenditureTable">
+                    <table>
+                        <caption>
+                            Expenditure Table
+                        </caption>
+                        <tr>
+                            <th>Heading 1</th>
+                            <th>Heading 2</th>
+                            <th>Heading 3</th>
+                        </tr>
+                        <tbody>
+                            <tr>
+                                <td>Data 1.1</td>
+                                <td>Data 1.2</td>
+                                <td>Data 1.3</td>
+                            </tr>
+                            <tr>
+                                <td>Data 2.1</td>
+                                <td>Data 2.2</td>
+                                <td>Data 2.3</td>
+                            </tr>
+                            <tr>
+                                <td>Data 3.1</td>
+                                <td>Data 3.2</td>
+                                <td>Data 3.3</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="waterTable">
+                    <table>
+                        <caption>
+                            Water Table
+                        </caption>
+                        <tr>
+                            <th>Heading 1</th>
+                            <th>Heading 2</th>
+                            <th>Heading 3</th>
+                        </tr>
+                        <tbody>
+                            <tr>
+                                <td>Data 1.1</td>
+                                <td>Data 1.2</td>
+                                <td>Data 1.3</td>
+                            </tr>
+                            <tr>
+                                <td>Data 2.1</td>
+                                <td>Data 2.2</td>
+                                <td>Data 2.3</td>
+                            </tr>
+                            <tr>
+                                <td>Data 3.1</td>
+                                <td>Data 3.2</td>
+                                <td>Data 3.3</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+        <footer>
+            &copy; AMPlify, by Team 2.
+        </footer>
+    </div>
+</body>
+</html>

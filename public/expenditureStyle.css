@@ -1,0 +1,152 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: monospace;
+    font-size: 2rem;
+    overflow: hidden;
+}
+
+.mainGrid {
+    width: 100vw;
+    height: 100vh;
+    display: grid;
+    grid-template-rows: 1fr 18fr 1fr;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 3px solid black;
+    background: linear-gradient(90deg, orange, red, purple);
+}
+
+header > * {
+    padding: 0.5rem;
+}
+
+footer {
+    font-size: 1rem;
+    padding: 0.5em;
+    text-align: center;
+    border-top: 3px solid black;
+    background: linear-gradient(90deg, orange, red, purple);
+}
+
+.logo {
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.logo:hover {
+    color: white;
+}
+
+nav {
+    display: flex;
+    justify-content: space-around;
+    font-size: 1.25rem;
+}
+
+nav li {
+    display: inline;
+    margin: 0 5rem;
+}
+
+nav li a {
+    text-decoration: none;
+    color: black;
+}
+
+nav li a:hover {
+    color: white;
+    border-bottom: 3px solid white;
+    font-weight: 600;
+}
+
+main {
+    display: grid;
+    grid-template-columns: repeat(7,1fr);
+    font-size: 1.25rem;
+    overflow: hidden;
+}
+
+aside {
+    grid-column: span 2;
+    border-right: 3px solid black;
+}
+
+.profile {
+    padding: 1rem;
+    border-bottom: 3px solid black;
+}
+
+.profile p {
+    padding: 1rem 0;
+}
+
+.profile p:nth-child(1) {
+    font-size: 1.75rem;
+    font-weight: 600;
+}
+
+.subHeading {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.helplines {
+    padding: 1rem;
+}
+
+.helplines p {
+    padding: 1rem 0;
+}
+
+.helplines p:nth-child(1) {
+    font-size: 1.75rem;
+    font-weight: 600;
+}
+
+section {
+    grid-column: span 5;
+    overflow-y: scroll;
+}
+
+.currentMonth {
+    font-size: 1.5rem;
+    font-weight: 600;
+    padding: 1rem;
+    border-bottom: 3px dotted silver;
+}
+
+.expenditureTable, .waterTable{
+    margin: 2rem;
+}
+
+.expenditureTable table, .waterTable table{
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.expenditureTable caption, .waterTable caption {
+    font-size: 1.5rem;
+    font-weight: 600;
+    padding: 1rem;
+}
+
+.expenditureTable table th, .expenditureTable table td, .waterTable table th, .waterTable table td {
+    border: 1px solid black;
+    padding: 5px;
+}
+
+.expenditureTable th, .waterTable th {
+    background: silver;
+}
+
+.expenditureTable tr:hover, .waterTable tr:hover {
+    background: silver;
+} 
