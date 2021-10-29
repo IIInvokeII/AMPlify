@@ -102,6 +102,31 @@ app.get('/users', checkNotAuthenticated, async (req, res) => {
     }
 })
 
+app.get('/expenses', checkNotAuthenticated, async (req, res) => {
+  const db = await mongodb.MongoClient.connect('mongodb://localhost:27017/').catch(err => {
+    console.log(err)
+    res.status(400).send("Error fetching expenses");
+  });
+    try {
+      console.log('querying for expenses in apartment: ' + req.header('apartment') );
+      expensess = await db.db("amplify").collection('expense').find({ "apartment": req.header('apartment') }).toArray();            
+      var expenses = []
+      for(var i = 0; i < expenses.length; i++) {
+        var expense = {
+          id: expensess[i]._id,
+          type: expensess[i].expense_type
+        }
+        expenses.push(expense)
+      }
+      res.status(200).send(JSON.stringify(expenses));
+    } catch (err) {
+      console.log(err)
+      res.status(400).send("Error fetching residents");
+    } finally {
+      db.close();
+    }
+})
+
 app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
   successRedirect: '/',
   failureRedirect: '/login',

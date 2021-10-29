@@ -6,6 +6,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expenditure</title>
     <link rel="stylesheet" href="expenditureStyle.css">
+    <script>
+        var xmlhttp = new XMLHttpRequest();
+        var url = "http://localhost:3000/expenses";
+        var apartment = `<%= apartment %>`
+        xmlhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var expenses = JSON.parse(this.responseText);
+                populateTable(expenses);
+            }
+        }
+        xmlhttp.open("GET", url, true);
+        xmlhttp.setRequestHeader('apartment', apartment)
+        xmlhttp.send();
+
+        function populateTable(expenses) {
+            var out;// = '<option value="" selected disabled hidden>-- expense paid by --</option>';
+            var i;
+            //for (i = 0; i < expenses.length; i++) {
+                out += '<option value="' + /* residents[i].id + '|' + */ expenses[i].expense_type + '">' + expenses[i].expense_type + '</option>';
+            //}
+            console.log(out);
+            document.getElementById("trial").innerHTML = out;
+            //document.getElementById("residents_count").value = residents.length;            
+        }        
+    </script>
 </head>
 <body>
     <div class="mainGrid">
@@ -82,7 +107,7 @@
                         </tr>
                         <tbody>
                             <tr>
-                                <td>Data 1.1</td>
+                                <td><output id="trial"></output></td>
                                 <td>Data 1.2</td>
                                 <td>Data 1.3</td>
                             </tr>
