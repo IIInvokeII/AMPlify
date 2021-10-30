@@ -5,13 +5,14 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expenses</title>
-    <link rel="stylesheet" href="expensesStyle.css">
+    <link rel="stylesheet" href="expenditureStyle.css">
     <script>
         
         function fetchUsers() {
             var xmlhttp = new XMLHttpRequest();
             var url = "http://localhost:3000/users";
             var apartment = `<%= apartment %>`
+            var secret = `<%= secret %>`
             xmlhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     var residents = JSON.parse(this.responseText);
@@ -20,6 +21,7 @@
             }
             xmlhttp.open("GET", url, true);
             xmlhttp.setRequestHeader('apartment', apartment)
+            xmlhttp.setRequestHeader('Authorization', secret)
             xmlhttp.send();
         }
 
@@ -27,6 +29,7 @@
             var xmlhttp = new XMLHttpRequest();
             var url = "http://localhost:3000/bookings";
             var apartment = `<%= apartment %>`
+            var secret = `<%= secret %>`
             xmlhttp.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
                     var bookings = JSON.parse(this.responseText);
@@ -40,6 +43,7 @@
             }
             xmlhttp.open("GET", url, true);
             xmlhttp.setRequestHeader('apartment', apartment)
+            xmlhttp.setRequestHeader('Authorization',secret)
             xmlhttp.send();
         }
 
@@ -93,13 +97,54 @@
             <nav>
                 <ul>
                     <% if(admin){ %> <li><a href="/new_expense">Expenses</a></li> <% } %>
-                    <li><a href="/expenditure">Expenditure</a></li>
+                    <li><a href="/">Expenditure</a></li>
                     <% if(admin){ %> <li><a href="/register">Register</a></li> <% } %>
                     <li><a href="/logout">Log out</a></li>
                 </ul>
             </nav>
         </header>
         <main>
+            <aside>
+                <div class="profile">
+                    <p>
+                        PROFILE:
+                    </p>
+                    <p>
+                        <span class="subHeading">
+                            APARTMENT:
+                        </span> <%= apartment %>
+                    </p>
+                    <p>
+                        <span class="subHeading">
+                            HOUSE:
+                        </span> <%= doorNumber %>
+                    </p>
+                    <p>
+                        <span class="subHeading">
+                            NAME:
+                        </span> <%= name %>
+                    </p>
+                    <p>
+                        <span class="subHeading">
+                            CONTACT:
+                        </span> <%= contact %>
+                    </p>                   
+                </div>
+                <div class="helplines">
+                    <p>
+                        HELPLINES:
+                    </p>
+                    <p>
+                        Line1: 1212 1212
+                    </p>
+                    <p>
+                        Line2: 3434 3434
+                    </p>
+                    <p>
+                        Line3: 5656 5656
+                    </p>
+                </div>
+            </aside>
             <section>
                 <div class="expensesForm">
                     <div id="message"></div>

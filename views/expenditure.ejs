@@ -14,6 +14,8 @@
         var url = "http://localhost:3000/expenses";
         var apartment = `<%= apartment %>`
         var id = `<%= id %>`
+        var secret = `<%= secret %>`
+        var total = 0
         xmlhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 var expenses = JSON.parse(this.responseText);
@@ -22,6 +24,7 @@
         }
         xmlhttp.open("GET", url, true);
         xmlhttp.setRequestHeader('apartment', apartment)
+        xmlhttp.setRequestHeader('Authorization',secret)
         xmlhttp.send();
 
         function populateTable(expenses) {
@@ -30,6 +33,9 @@
             var water_out = "";     
             var w_count = 1;
             for (var i = 0; i < expenses.length; i++) {
+                /* if(!expenses[i].date.includes("2021-11")){
+                    continue;
+                } */
                 if(expenses[i].type != 'waterBookings') {
                     expense_out += "<tr>";
                     expense_out += '<td>' + e_count++ + '</td>';
@@ -40,8 +46,18 @@
                     } else {
                         expense_out += '<td>' + expenses[i].paidBy + '</td>';
                     }
-                    expense_out += '<td>' + expenses[i].amount + '</td>';                
-                    expense_out += '<td>' + expenses[i].individualAmt + '</td>';
+                    expense_out += '<td>' + expenses[i].amount + '</td>';
+                    if(expenses[i].paidByID == id){
+                        expense_out += '<td> You have already paid your share: ' + expenses[i].individualAmt + '</td>';
+                    } else {
+                        expense_out += '<td>' + expenses[i].individualAmt + '</td>';
+                        total += expenses[i].individualAmt;
+                    }
+                    if(expenses[i].paidByID == id){
+                        expense_out += '<td> N.A. </td>';  
+                    } else {
+                        expense_out += '<td>' + expenses[i].contact + '</td>';  
+                    }
                     expense_out += '<td>' + expenses[i].description + '</td>';
                     expense_out += "</tr>";
                 } else {
@@ -53,11 +69,21 @@
                     water_out += '<td>' + expenses[i].amount + '</td>';                    
                     if(expenses[i].readings && expenses[i].readings[id]) {
                         water_out += '<td>' + expenses[i].readings[id].reading + '</td>';
-                        water_out += '<td>' + expenses[i].readings[id].amount + '</td>';
+                        if(expenses[i].paidByID == id){
+                            water_out += '<td> You have already paid your share: ' + expenses[i].readings[id].amount + '</td>';
+                        } else {
+                            water_out += '<td>' + expenses[i].readings[id].amount + '</td>';
+                            total += expenses[i].readings[id].amount;
+                        }
                     } else {
                         water_out += '<td> Water Reading Not Completed </td>';
                         water_out += '<td> Water Reading Not Completed </td>';
-                    }                    
+                    }       
+                    if(expenses[i].paidByID == id){
+                        water_out += '<td> N.A. </td>';  
+                    } else {
+                        water_out += '<td>' + expenses[i].contact + '</td>';  
+                    }
                     water_out += '<td>' + expenses[i].description + '</td>';
                     water_out += "</tr>"
                 }            
@@ -66,6 +92,7 @@
             document.getElementById("expenditure_tbody").innerHTML = expense_out;       
             document.getElementById("water_tbody").innerHTML = water_out;
             document.getElementById("date_now").innerHTML = datestring;
+            document.getElementById("total_amount").innerHTML = total;
         }        
     </script>
 </head>
@@ -78,7 +105,7 @@
             <nav>
                 <ul>
                     <% if(admin){ %> <li><a href="/new_expense">Expenses</a></li> <% } %>
-                    <li><a href="/expenditure">Expenditure</a></li>
+                    <li><a href="/">Expenditure</a></li>
                     <% if(admin){ %> <li><a href="/register">Register</a></li> <% } %>
                     <li><a href="/logout">Log out</a></li>
                 </ul>
@@ -104,6 +131,11 @@
                         <span class="subHeading">
                             NAME:
                         </span> <%= name %>
+                    </p>
+                    <p>
+                        <span class="subHeading">
+                            CONTACT:
+                        </span> <%= contact %>
                     </p>                   
                 </div>
                 <div class="helplines">
@@ -139,10 +171,14 @@
                             <th>Paid By</th>
                             <th>Total Amount</th>                            
                             <th>Individual Amount</th>
+                            <th>Contact for Payment</th> 
                             <th>Description</th>
                         </tr>
                         <tbody id="expenditure_tbody"></tbody>
                     </table>
+                </div>
+                <div>
+                    Total Amount Payable: <span id="total_amount"></span>
                 </div>
                 <div class="waterTable">
                     <table>
@@ -157,10 +193,14 @@
                             <th>Total Amount</th>                                                        
                             <th>Your Water Reading</th>
                             <th>Your Individual Amount</th>
+                            <th>Contact for Payment</th>
                             <th>Description</th>
                         </tr>
                         <tbody id="water_tbody"></tbody>
                     </table>
+                </div>
+                <div>
+                    Total Amount Payable: <span id="total_amount"></span>
                 </div>
             </section>
         </main>

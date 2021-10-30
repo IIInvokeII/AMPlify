@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expenses</title>
-    <link rel="stylesheet" href="expensesStyle.css">
+    <link rel="stylesheet" href="expenditureStyle.css">
 </head>
 <body>
     <div class="mainGrid">
@@ -16,13 +16,54 @@
             <nav>
                 <ul>
                     <% if(admin){ %> <li><a href="/new_expense">Expenses</a></li> <% } %>
-                    <li><a href="/expenditure">Expenditure</a></li>
+                    <li><a href="/">Expenditure</a></li>
                     <% if(admin){ %> <li><a href="/register">Register</a></li> <% } %>
                     <li><a href="/logout">Log out</a></li>
                 </ul>
             </nav>
         </header>
         <main>
+            <aside>
+                <div class="profile">
+                    <p>
+                        PROFILE:
+                    </p>
+                    <p>
+                        <span class="subHeading">
+                            APARTMENT:
+                        </span> <%= apartment %>
+                    </p>
+                    <p>
+                        <span class="subHeading">
+                            HOUSE:
+                        </span> <%= doorNumber %>
+                    </p>
+                    <p>
+                        <span class="subHeading">
+                            NAME:
+                        </span> <%= name %>
+                    </p>
+                    <p>
+                        <span class="subHeading">
+                            CONTACT:
+                        </span> <%= contact %>
+                    </p>                   
+                </div>
+                <div class="helplines">
+                    <p>
+                        HELPLINES:
+                    </p>
+                    <p>
+                        Line1: 1212 1212
+                    </p>
+                    <p>
+                        Line2: 3434 3434
+                    </p>
+                    <p>
+                        Line3: 5656 5656
+                    </p>
+                </div>
+            </aside>
             <section>
                 <div class="register">
 					<form action="/register" method="POST">
@@ -33,6 +74,10 @@
                         <div>
                             <label for="doorNumber">Door No.:</label>
                             <input type="text" id="doorNumber" name="doorNumber" required>
+                        </div>
+                        <div>
+                            <label for="contact">Contact No.:</label>
+                            <input type="text" id="contact" name="contact" required>
                         </div>
                         <div>
                             <label for="username">Username</label>

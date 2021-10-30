@@ -150,3 +150,54 @@ section {
 .expenditureTable tr:hover, .waterTable tr:hover {
     background: silver;
 } 
+
+.expensesForm {
+    font-size: 2rem;
+    position: relative;
+    top: 50%;
+    left: 50%;
+    transform: translate(-60%, -50%);
+    border: 3px solid black;
+    border-radius: 25px;
+    width: 400px;
+}
+
+.expensesForm form {
+    padding: 1rem;
+}
+
+.expensesForm form > * {
+    margin: 0.5rem;
+    padding: 0.5rem;
+}
+
+.textField {
+    border-bottom: 3px dotted black;
+}
+
+.textField input {
+    font-family: monospace;
+    font-size: 1.25rem;
+    width: 100%;
+    height: 2rem;
+    border: none;
+    outline: none;
+    background: none;
+}
+
+.submitField input[type="submit"] {
+    font-family: monospace;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: white;
+    width: 100%;
+    height: 3rem;
+    border: 1.5px solid black;
+    border-radius: 25px;
+    background: linear-gradient(90deg, orange, red, purple);
+    cursor: pointer;
+}
+
+.submitField input[type="submit"]:hover {
+    border: 3px solid black;
+}
