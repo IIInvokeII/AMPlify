@@ -7,28 +7,81 @@
     <title>Expenses</title>
     <link rel="stylesheet" href="expensesStyle.css">
     <script>
-        var xmlhttp = new XMLHttpRequest();
-        var url = "http://localhost:3000/users";
-        var apartment = `<%= apartment %>`
-        xmlhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                var residents = JSON.parse(this.responseText);
-                populateDropdown(residents);
+        
+        function fetchUsers() {
+            var xmlhttp = new XMLHttpRequest();
+            var url = "http://localhost:3000/users";
+            var apartment = `<%= apartment %>`
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var residents = JSON.parse(this.responseText);
+                    populateInputs(residents);
+                }
             }
+            xmlhttp.open("GET", url, true);
+            xmlhttp.setRequestHeader('apartment', apartment)
+            xmlhttp.send();
         }
-        xmlhttp.open("GET", url, true);
-        xmlhttp.setRequestHeader('apartment', apartment)
-        xmlhttp.send();
 
-        function populateDropdown(residents) {
-            var out = '<option value="" selected disabled hidden>-- payee --</option>';
+        function fetchWaterBookings() {
+            var xmlhttp = new XMLHttpRequest();
+            var url = "http://localhost:3000/bookings";
+            var apartment = `<%= apartment %>`
+            xmlhttp.onreadystatechange = function () {
+                if (this.readyState == 4 && this.status == 200) {
+                    var bookings = JSON.parse(this.responseText);
+                    if(bookings.length > 0) {
+                        populateDropdown(bookings);
+                    } else {
+                        document.getElementById("water_reading_form").hidden = true;
+                        document.getElementById("message").innerHTML = "No Active Water Bookings found for your apartment";
+                    } 
+                }
+            }
+            xmlhttp.open("GET", url, true);
+            xmlhttp.setRequestHeader('apartment', apartment)
+            xmlhttp.send();
+        }
+
+        function populateDropdown(bookings) {
+            var out = '<option value="" selected disabled hidden>-- select water booking --</option>';
+            var i;
+            for (i = 0; i < bookings.length; i++) {
+                optionText = "water booking done by " + bookings[i].paidBy + " on " + bookings[i].date;
+                out += '<option value="' + bookings[i].id + '">' + optionText + '</option>';
+            }
+            document.getElementById("booking").innerHTML = out;
+            document.getElementById("bookings").value = JSON.stringify(bookings);            
+        }
+        
+        function populateInputs(residents) {
+            var out = "";            
             var i;
             for (i = 0; i < residents.length; i++) {
-                out += '<option value="' + residents[i].id + '|' + residents[i].name + '">' + residents[i].name + '</option>';
+                out += '<input type="text" name="' + residents[i].id + '" placeholder="water reading for ' + residents[i].name + '" required>';
+            }            
+            document.getElementById("reading_inputs").innerHTML = out;
+            document.getElementById("residents").value = JSON.stringify(residents);
+        }
+        
+        function bookingChangeListener() {
+            id = document.getElementById("booking").value;
+            var bookings = JSON.parse(document.getElementById("bookings").value);
+            var i;
+            for (i = 0; i < bookings.length; i++) {
+                if (bookings[i].id == id) {
+                    document.getElementById("total_amount_paid").hidden = false;
+                    document.getElementById("total_amount_paid").innerHTML = "Total Amount Paid: " + bookings[i].totalAmt;
+                    document.getElementById("total_water_quantity").hidden = false;
+                    document.getElementById("total_water_quantity").innerHTML = "Total Water Quantity: " + bookings[i].waterQty;
+                    break;
+                }
             }
-            document.getElementById("resident_name").innerHTML = out;
-            document.getElementById("residents_count").value = residents.length;            
-        }        
+        }
+
+        fetchUsers();
+        fetchWaterBookings();
+
     </script>
 </head>
 <body>
@@ -49,16 +102,16 @@
         <main>
             <section>
                 <div class="expensesForm">
-                    <form method="POST">
+                    <div id="message"></div>
+                    <form id="water_reading_form" method="POST">
                         <div class="selectField">
-                            <select id="expense_type" name="expense_type" required>
-                                <option value="waterReadings">Water Readings</option>
-                            </select>
+                            <select id="booking" name="booking" onchange="bookingChangeListener()" required></select>
                         </div>
-                        <select name="resident_name" id="resident_name" required></select>
-                        <div class="textField" id="water_quantity_div">
-                            <input type="text" id="water_quantity" name="water_quantity" placeholder="water quantity" required>
-                        </div>
+                        <div id="total_amount_paid" hidden></div>                        
+                        <div id="total_water_quantity" hidden></div>                        
+                        <div id="reading_inputs"></div>
+                        <input name="residents" id="residents" hidden>
+                        <input name="bookings" id="bookings" hidden>
                         <div class="submitField">
                             <input type="submit" value="Update">
                         </div>

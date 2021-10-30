@@ -7,9 +7,13 @@
     <title>Expenditure</title>
     <link rel="stylesheet" href="expenditureStyle.css">
     <script>
+        var today = new Date();
+        var datestring = today.getDate()  + "/" + (today.getMonth()+1) + "/" + today.getFullYear();
+
         var xmlhttp = new XMLHttpRequest();
         var url = "http://localhost:3000/expenses";
         var apartment = `<%= apartment %>`
+        var id = `<%= id %>`
         xmlhttp.onreadystatechange = function () {
             if (this.readyState == 4 && this.status == 200) {
                 var expenses = JSON.parse(this.responseText);
@@ -21,14 +25,47 @@
         xmlhttp.send();
 
         function populateTable(expenses) {
-            var out;// = '<option value="" selected disabled hidden>-- expense paid by --</option>';
-            var i;
-            //for (i = 0; i < expenses.length; i++) {
-                out += '<option value="' + /* residents[i].id + '|' + */ expenses[i].expense_type + '">' + expenses[i].expense_type + '</option>';
-            //}
-            console.log(out);
-            document.getElementById("trial").innerHTML = out;
-            //document.getElementById("residents_count").value = residents.length;            
+            var expense_out = ""; 
+            var e_count = 1;      
+            var water_out = "";     
+            var w_count = 1;
+            for (var i = 0; i < expenses.length; i++) {
+                if(expenses[i].type != 'waterBookings') {
+                    expense_out += "<tr>";
+                    expense_out += '<td>' + e_count++ + '</td>';
+                    expense_out += '<td>' + expenses[i].type + '</td>';
+                    expense_out += '<td>' + expenses[i].date + '</td>';
+                    if(expenses[i].type == 'corpusFunds') {
+                        expense_out += '<td> N.A. </td>';
+                    } else {
+                        expense_out += '<td>' + expenses[i].paidBy + '</td>';
+                    }
+                    expense_out += '<td>' + expenses[i].amount + '</td>';                
+                    expense_out += '<td>' + expenses[i].individualAmt + '</td>';
+                    expense_out += '<td>' + expenses[i].description + '</td>';
+                    expense_out += "</tr>";
+                } else {
+                    water_out += "<tr>";
+                    water_out += '<td>' + w_count++ + '</td>';
+                    water_out += '<td>' + expenses[i].date + '</td>';
+                    water_out += '<td>' + expenses[i].paidBy + '</td>';
+                    water_out += '<td>' + expenses[i].waterQty + '</td>';
+                    water_out += '<td>' + expenses[i].amount + '</td>';                    
+                    if(expenses[i].readings && expenses[i].readings[id]) {
+                        water_out += '<td>' + expenses[i].readings[id].reading + '</td>';
+                        water_out += '<td>' + expenses[i].readings[id].amount + '</td>';
+                    } else {
+                        water_out += '<td> Water Reading Not Completed </td>';
+                        water_out += '<td> Water Reading Not Completed </td>';
+                    }                    
+                    water_out += '<td>' + expenses[i].description + '</td>';
+                    water_out += "</tr>"
+                }            
+            }            
+            
+            document.getElementById("expenditure_tbody").innerHTML = expense_out;       
+            document.getElementById("water_tbody").innerHTML = water_out;
+            document.getElementById("date_now").innerHTML = datestring;
         }        
     </script>
 </head>
@@ -56,23 +93,18 @@
                     <p>
                         <span class="subHeading">
                             APARTMENT:
-                        </span> Example1
+                        </span> <%= apartment %>
                     </p>
                     <p>
                         <span class="subHeading">
                             HOUSE:
-                        </span> F1
+                        </span> <%= doorNumber %>
                     </p>
                     <p>
                         <span class="subHeading">
                             NAME:
-                        </span> Person1
-                    </p>
-                    <p>
-                        <span class="subHeading">
-                            CONTACT:
-                        </span> 90909 90909
-                    </p>
+                        </span> <%= name %>
+                    </p>                   
                 </div>
                 <div class="helplines">
                     <p>
@@ -92,7 +124,7 @@
             <section>
                 <div class="currentMonth">
                     <p>
-                        month: "CURRENT MONTH"
+                        Date: <span id="date_now"></span>
                     </p>
                 </div>
                 <div class="expenditureTable">
@@ -101,27 +133,15 @@
                             Expenditure Table
                         </caption>
                         <tr>
-                            <th>Heading 1</th>
-                            <th>Heading 2</th>
-                            <th>Heading 3</th>
+                            <th>#</th>
+                            <th>Expense type</th>
+                            <th>Date Paid</th>
+                            <th>Paid By</th>
+                            <th>Total Amount</th>                            
+                            <th>Individual Amount</th>
+                            <th>Description</th>
                         </tr>
-                        <tbody>
-                            <tr>
-                                <td><output id="trial"></output></td>
-                                <td>Data 1.2</td>
-                                <td>Data 1.3</td>
-                            </tr>
-                            <tr>
-                                <td>Data 2.1</td>
-                                <td>Data 2.2</td>
-                                <td>Data 2.3</td>
-                            </tr>
-                            <tr>
-                                <td>Data 3.1</td>
-                                <td>Data 3.2</td>
-                                <td>Data 3.3</td>
-                            </tr>
-                        </tbody>
+                        <tbody id="expenditure_tbody"></tbody>
                     </table>
                 </div>
                 <div class="waterTable">
@@ -130,27 +150,16 @@
                             Water Table
                         </caption>
                         <tr>
-                            <th>Heading 1</th>
-                            <th>Heading 2</th>
-                            <th>Heading 3</th>
+                            <th>#</th>
+                            <th>Date Paid</th>
+                            <th>Paid By</th>
+                            <th>Total Water Quantity</th>
+                            <th>Total Amount</th>                                                        
+                            <th>Your Water Reading</th>
+                            <th>Your Individual Amount</th>
+                            <th>Description</th>
                         </tr>
-                        <tbody>
-                            <tr>
-                                <td>Data 1.1</td>
-                                <td>Data 1.2</td>
-                                <td>Data 1.3</td>
-                            </tr>
-                            <tr>
-                                <td>Data 2.1</td>
-                                <td>Data 2.2</td>
-                                <td>Data 2.3</td>
-                            </tr>
-                            <tr>
-                                <td>Data 3.1</td>
-                                <td>Data 3.2</td>
-                                <td>Data 3.3</td>
-                            </tr>
-                        </tbody>
+                        <tbody id="water_tbody"></tbody>
                     </table>
                 </div>
             </section>

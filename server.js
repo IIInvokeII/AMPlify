@@ -15,8 +15,7 @@ const methodOverride = require('method-override')
 const initializePassport = require('./passport-config')
 initializePassport(passport,
   async username => {
-    const db = await mongodb.MongoClient.connect('mongodb://localhost:27017/').catch(err => { throw err });
-    console.log("Connected");
+    const db = await mongodb.MongoClient.connect(process.env.MONGODB_HOST).catch(err => { throw err });
     try {
       return await db.db("amplify").collection('residents').findOne({ "user.username": username });
     } catch (err) {
@@ -26,7 +25,7 @@ initializePassport(passport,
     }
   },
   async id => {
-    const db = await mongodb.MongoClient.connect('mongodb://localhost:27017/').catch(err => { throw err });
+    const db = await mongodb.MongoClient.connect(process.env.MONGODB_HOST).catch(err => { throw err });
     try {
       return await db.db("amplify").collection('residents').findOne({ "_id": new mongodb.ObjectId(id) });
     } catch (err) {
@@ -66,7 +65,7 @@ app.get('/water_reading', checkAuthenticated, (req,res) => {
 })
 
 app.get('/expenditure',checkAuthenticated, (req,res) => {
-  res.render('expenditure.ejs', { name: req.user.name, admin: req.user.admin, apartment: req.user.apartment })
+  res.render('expenditure.ejs', { id: req.user._id, name: req.user.name, admin: req.user.admin, apartment: req.user.apartment, doorNumber: req.user.doorNumber })
 })
 
 app.get('/login', checkNotAuthenticated, (req, res) => {
@@ -77,13 +76,11 @@ app.get('/register', checkAuthenticated, (req, res) => {
   res.render('register.ejs', { name: req.user.name, admin: req.user.admin, apartment: req.user.apartment })
 })
 
-app.get('/users', checkNotAuthenticated, async (req, res) => {
-  const db = await mongodb.MongoClient.connect('mongodb://localhost:27017/').catch(err => {
-    console.log(err)
+app.get('/users', checkAuthenticated, async (req, res) => {
+  const db = await mongodb.MongoClient.connect(process.env.MONGODB_HOST).catch(err => {
     res.status(400).send("Error fetching residents");
   });
     try {
-      console.log('querying for residents in apartment: ' + req.header('apartment') );
       residents = await db.db("amplify").collection('residents').find({ "apartment": req.header('apartment') }).toArray();            
       var users = []
       for(var i = 0; i < residents.length; i++) {
@@ -95,33 +92,60 @@ app.get('/users', checkNotAuthenticated, async (req, res) => {
       }
       res.status(200).send(JSON.stringify(users));
     } catch (err) {
-      console.log(err)
       res.status(400).send("Error fetching residents");
     } finally {
       db.close();
     }
 })
 
-app.get('/expenses', checkNotAuthenticated, async (req, res) => {
-  const db = await mongodb.MongoClient.connect('mongodb://localhost:27017/').catch(err => {
-    console.log(err)
+app.get('/expenses', checkAuthenticated, async (req, res) => {
+  const db = await mongodb.MongoClient.connect(process.env.MONGODB_HOST).catch(err => {
     res.status(400).send("Error fetching expenses");
   });
-    try {
-      console.log('querying for expenses in apartment: ' + req.header('apartment') );
-      expensess = await db.db("amplify").collection('expense').find({ "apartment": req.header('apartment') }).toArray();            
-      var expenses = []
+    try {      
+      expenses = await db.db("amplify").collection('expenses').find({ "apartment": req.header('apartment') }).toArray();    
+      var responseList = []
       for(var i = 0; i < expenses.length; i++) {
         var expense = {
-          id: expensess[i]._id,
-          type: expensess[i].expense_type
+          type: expenses[i].expense_type,
+          date: expenses[i].date_paid,
+          amount: expenses[i].amount_paid,
+          paidBy: expenses[i].paid_by,
+          description: expenses[i].description,
+          individualAmt: expenses[i].individual_amount,
+          waterQty: expenses[i].water_quantity,
+          readings: expenses[i].readings
         }
-        expenses.push(expense)
+        responseList.push(expense)
       }
-      res.status(200).send(JSON.stringify(expenses));
+      res.status(200).send(JSON.stringify(responseList));
     } catch (err) {
-      console.log(err)
       res.status(400).send("Error fetching residents");
+    } finally {
+      db.close();
+    }
+})
+
+app.get('/bookings', checkAuthenticated, async (req, res) => {
+  const db = await mongodb.MongoClient.connect(process.env.MONGODB_HOST).catch(err => {
+    res.status(400).send("Error fetching water bookings");
+  });
+    try {
+      bookings = await db.db("amplify").collection('expenses').find({ "apartment": req.header('apartment'), "expense_type": "waterBookings", "readings": {$exists: false} }).toArray();            
+      var responseList = []
+      for(var i = 0; i < bookings.length; i++) {
+        var booking = {
+          id: bookings[i]._id,
+          date: bookings[i].date_paid,
+          paidBy: bookings[i].paid_by,
+          waterQty: bookings[i].water_quantity,
+          totalAmt: bookings[i].amount_paid
+        }
+        responseList.push(booking)
+      }
+      res.status(200).send(JSON.stringify(responseList));
+    } catch (err) {
+      res.status(400).send("Error fetching water bookings");
     } finally {
       db.close();
     }
@@ -147,15 +171,14 @@ app.post('/register', checkAuthenticated, async (req, res) => {
       admin: false
     }
 
-    mongodb.MongoClient.connect('mongodb://localhost:27017/', function (err, db) {
+    mongodb.MongoClient.connect(process.env.MONGODB_HOST, function (err, db) {
       if (err) throw err;
       var dbo = db.db("amplify");
       dbo.collection("residents").insertOne(resident, function (err, result) {
         if (err) {
           req.flash('info','user not added')
           res.redirect('/register')          
-        } else {
-          console.log(`Added a new resident`)
+        } else {          
           req.flash('info','user added successfully')
           res.redirect('/register')          
         }
@@ -170,7 +193,7 @@ app.post('/register', checkAuthenticated, async (req, res) => {
 
 app.post('/su/register_admin', checkNotAuthenticated, async (req, res) => {
   try {
-    if(req.header('Authorization') !== 'qwerty12345') {
+    if(req.header('Authorization') !== process.env.API_SECRET) {
       res.status(400).send("Unauthorized");
       return;
     }
@@ -186,7 +209,7 @@ app.post('/su/register_admin', checkNotAuthenticated, async (req, res) => {
       admin: true
     }
 
-    mongodb.MongoClient.connect('mongodb://localhost:27017/', function (err, db) {
+    mongodb.MongoClient.connect(process.env.MONGODB_HOST, function (err, db) {
       if (err) throw err;
       var dbo = db.db("amplify");
       dbo.collection("residents").insertOne(resident, function (err, result) {
@@ -204,27 +227,27 @@ app.post('/su/register_admin', checkNotAuthenticated, async (req, res) => {
 })
 
 app.post('/new_expense',checkAuthenticated, (req,res) => {
-  console.log('processing new expense')
   try {    
     expense = {
       expense_type: req.body.expense_type,
       date_paid: req.body.date_paid,
       amount_paid: req.body.amount_paid,
       apartment: req.user.apartment,
-      //booking_done: false
+      description: req.body.desc
     }
 
-    if(req.body.expense_type !== 'corpusFunds') {
+    if(req.body.expense_type != 'corpusFunds') {
       expense.paid_by_ID = req.body.paid_by.split('|')[0];
       expense.paid_by = req.body.paid_by.split('|')[1];
     }
 
-    if(req.body.expense_type == 'waterBookings'){
-      expense.individual_amount = req.body.amount_paid / req.body.residents_count;
+    if(req.body.expense_type == 'waterBookings'){    
       expense.water_quantity= req.body.water_quantity;
+    } else {
+      expense.individual_amount = req.body.amount_paid / req.body.residents_count;
     }
 
-    mongodb.MongoClient.connect('mongodb://localhost:27017/', function (err, db) {
+    mongodb.MongoClient.connect(process.env.MONGODB_HOST, function (err, db) {
       if (err) throw err;
       var dbo = db.db("amplify");
       dbo.collection("expenses").insertOne(expense, function (err, result) {
@@ -232,7 +255,6 @@ app.post('/new_expense',checkAuthenticated, (req,res) => {
           req.flash('info','expense not added')
           res.redirect('/new_expense')          
         } else {
-          //console.log(`Added a new resident`)
           req.flash('info','expense added successfully')
           res.redirect('/new_expense')          
         }
@@ -246,34 +268,50 @@ app.post('/new_expense',checkAuthenticated, (req,res) => {
 })
 
 app.post('/water_reading',checkAuthenticated, (req,res) => {
-  console.log('processing water reading')
-  try {    
-    expense = {
-      expense_type: req.body.expense_type,
-      resident_ID : req.body.resident_name.split('|')[0],
-      resident_name : req.body.resident_name.split('|')[1],
-      water_quantity : req.body.water_quantity,
-      apartment: req.user.apartment,
+  try {            
+    bookingId = req.body.booking;            
+    booking = {};
+    bookings = JSON.parse(req.body.bookings);
+    for (var i = 0; i < bookings.length; i++) {
+      if (bookings[i].id == bookingId) {
+        booking = bookings[i];
+      } 
+    }
+    totalAmt = booking.totalAmt;
+    waterQty = booking.waterQty;
+    residents = JSON.parse(req.body.residents);
+    readings = {};
+    for (var i = 0; i < residents.length; i++) {
+      residentId = residents[i].id;
+      residentName = residents[i].name;
+      readingAmt = req.body[residentId];
+      amount_payable = (readingAmt/waterQty) * totalAmt;
+      reading = {
+        "name": residentName,
+        "reading": readingAmt,
+        "amount": amount_payable
+      }
+      readings[residentId] = reading;
     }
 
-    mongodb.MongoClient.connect('mongodb://localhost:27017/', function (err, db) {
+    mongodb.MongoClient.connect(process.env.MONGODB_HOST, function (err, db) {
       if (err) throw err;
       var dbo = db.db("amplify");
-      dbo.collection("expenses").insertOne(expense, function (err, result) {
+      var query = { "_id": new mongodb.ObjectId(bookingId) };
+      var updated = {$set: {readings: readings}};
+      dbo.collection("expenses").updateOne(query, updated, function (err, result) {
         if (err) {
-          req.flash('info','expense not added')
-          res.redirect('/new_expense')          
+          req.flash('info','water readings not added')
+          res.redirect('/water_reading')          
         } else {
-          //console.log(`Added a new resident`)
-          req.flash('info','expense added successfully')
-          res.redirect('/new_expense')          
+          req.flash('info','water readings added successfully')
+          res.redirect('/water_reading')          
         }
       });
     });
-
-  } catch {
+  } catch(err) {    
     req.flash('info','error, please try again')
-    res.redirect('/new_expense')
+    res.redirect('/water_reading')
   }
 })
 
