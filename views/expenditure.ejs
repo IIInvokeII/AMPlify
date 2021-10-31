@@ -62,7 +62,11 @@
                     if(expenses[i].paidByID == id){
                         expense_out += '<td> N.A. </td>';  
                     } else {
-                        expense_out += '<td>' + expenses[i].contact + '</td>';  
+                        if(expenses[i].type == "corpusFunds"){
+                            expense_out += '<td> Contact Admin </td>';  
+                        } else {
+                            expense_out += '<td>' + expenses[i].contact + '</td>'; 
+                        } 
                     }
                     expense_out += '<td>' + expenses[i].description + '</td>';
                     expense_out += "</tr>";
