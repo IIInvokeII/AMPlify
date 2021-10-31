@@ -7,6 +7,7 @@
 body {
     font-family: monospace;
     font-size: 2rem;
+    overflow: hidden;
 }
 
 .mainGrid {
@@ -70,6 +71,7 @@ main {
     display: grid;
     grid-template-columns: repeat(7,1fr);
     font-size: 1.25rem;
+    overflow: hidden;
 }
 
 aside {
@@ -77,9 +79,41 @@ aside {
     border-right: 3px solid black;
 }
 
+.profile {
+    padding: 1rem;
+    border-bottom: 3px solid black;
+}
+
+.profile p {
+    padding: 1rem 0;
+}
+
+.profile p:nth-child(1) {
+    font-size: 1.75rem;
+    font-weight: 600;
+}
+
+.subHeading {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.helplines {
+    padding: 1rem;
+}
+
+.helplines p {
+    padding: 1rem 0;
+}
+
+.helplines p:nth-child(1) {
+    font-size: 1.75rem;
+    font-weight: 600;
+}
+
 section {
     grid-column: span 5;
-    /* padding: 2rem; */
+    overflow-y: scroll;
 }
 
 .currentMonth {
@@ -89,43 +123,33 @@ section {
     border-bottom: 3px dotted silver;
 }
 
-.formsTab {
+.expenditureTable, .waterTable{
+    margin: 2rem;
+}
+
+.expenditureTable table, .waterTable table{
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.expenditureTable caption, .waterTable caption {
+    font-size: 1.5rem;
+    font-weight: 600;
     padding: 1rem;
 }
 
-/* .expensesType button {
-    font-family: monospace;
-    font-size: 1.25rem;
-    color: white;
-    border: 3px solid black;
-    border-radius: 25px;
-    padding: 1rem;
-    background: linear-gradient(90deg, orange, red, purple);
-    cursor: pointer;
+.expenditureTable table th, .expenditureTable table td, .waterTable table th, .waterTable table td {
+    border: 1px solid black;
+    padding: 5px;
 }
 
-.expensesType {
-    position: relative;
-    display: inline-block;
+.expenditureTable th, .waterTable th {
+    background: silver;
 }
 
-.expensesList {
-    display: none;
-    position: absolute;
-    z-index: 1;
-}
-
-.expensesList p {
-    padding: 0.25rem 1rem;
-}
-
-.expensesList p:hover {
-    border-bottom: 3px solid black;
-}
-
-.expensesType:hover .expensesList {
-    display: block;
-} */
+.expenditureTable tr:hover, .waterTable tr:hover {
+    background: silver;
+} 
 
 .expensesForm {
     font-size: 2rem;

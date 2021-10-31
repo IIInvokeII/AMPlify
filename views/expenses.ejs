@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Expenses</title>
-    <link rel="stylesheet" href="expenditureStyle.css">
+    <link rel="stylesheet" href="pageStyle.css">
     <script>
         var xmlhttp = new XMLHttpRequest();
         var url = "http://localhost:3000/users";
@@ -64,11 +64,12 @@
     <div class="mainGrid">
         <header>
             <div class="logo">
-                <a href="/">AMPLify.</a>
+                AMPLify.expenses
             </div>
             <nav>
                 <ul>
                     <% if(admin){ %> <li><a href="/new_expense">Expenses</a></li> <% } %>
+                    <% if(admin){ %> <li><a href="/water_reading">Water Reading</a></li> <% } %>
                     <li><a href="/">Expenditure</a></li>
                     <% if(admin){ %> <li><a href="/register">Register</a></li> <% } %>
                     <li><a href="/logout">Log out</a></li>
@@ -141,10 +142,6 @@
                             <%= messages.info %>
                         </p>
                     <% } %>
-                </div>
-                <div>
-                    <!-- <input type="submit" value="Water Reading"> -->
-                    <a href="/water_reading">Water Reading</a>
                 </div>
             </section>
         </main>

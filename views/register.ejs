@@ -4,18 +4,19 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Expenses</title>
-    <link rel="stylesheet" href="expenditureStyle.css">
+    <title>Register</title>
+    <link rel="stylesheet" href="pageStyle.css">
 </head>
 <body>
     <div class="mainGrid">
         <header>
             <div class="logo">
-                <a href="/">AMPLify.</a>
+                AMPLify.register
             </div>
             <nav>
                 <ul>
                     <% if(admin){ %> <li><a href="/new_expense">Expenses</a></li> <% } %>
+                    <% if(admin){ %> <li><a href="/water_reading">Water Reading</a></li> <% } %>
                     <li><a href="/">Expenditure</a></li>
                     <% if(admin){ %> <li><a href="/register">Register</a></li> <% } %>
                     <li><a href="/logout">Log out</a></li>
@@ -51,29 +52,26 @@
                 </div>
             </aside>
             <section>
-                <div class="register">
+                <div class="expensesForm">
 					<form action="/register" method="POST">
-                        <div>
-                            <label for="name">Full Name</label>
-                            <input type="text" id="name" name="name" required>
+                        <div class="textField">
+                            <input type="text" id="name" name="name" placeholder="Full Name" required>
                         </div>
-                        <div>
-                            <label for="doorNumber">Door No.:</label>
-                            <input type="text" id="doorNumber" name="doorNumber" required>
+                        <div class = "textField">
+                            <input type="text" id="doorNumber" name="doorNumber" placeholder="Door Number" required>
                         </div>
-                        <div>
-                            <label for="contact">Contact No.:</label>
-                            <input type="text" id="contact" name="contact" required>
+                        <div class = "textField">
+                            <input type="text" id="contact" name="contact" placeholder="Contact Number" required>
                         </div>
-                        <div>
-                            <label for="username">Username</label>
-                            <input type="text" id="username" name="username" required>
+                        <div class = "textField">
+                            <input type="text" id="username" name="username" placeholder="Username" required>
                         </div>
-                        <div>
-                            <label for="password">Password</label>
-                            <input type="password" id="password" name="password" required>
+                        <div class = "textField">
+                            <input type="password" id="password" name="password" placeholder="Password" required>
                         </div>
-                        <button type="submit">Register</button>
+                        <div class = "submitField">
+                            <input type="submit" value="Submit"></button>
+                        </div>
                     </form>
                     <% if ( messages.info ) { %>
                         <p>
