@@ -9,10 +9,10 @@ npm run devStart
 ```
 
 ## You also need the following for this to work:
-### Local MongoDB Instance (MongoDB Compass)
-### Postman (DevTool for Admin Profile Creation)
+### - Local MongoDB Instance (MongoDB Compass)
+### - Postman (DevTool for Admin Profile Creation)
 #### In Postman: POST = http://localhost:3000/su/register_admin
-#### You need to send a raw JSON file in the body:
+#### You need to send a raw JSON file in the body + An Authorization Header with value "qwert12345". This can be changed later.
 ```
 {
   "name": "My Name",
@@ -23,4 +23,4 @@ npm run devStart
   "doorNumber": "123"
 }
 ```
-### Git Bash (You might already have this, but listing it here just in case)
+### - Git Bash (You might already have this, but listing it here just in case)
